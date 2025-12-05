@@ -1,0 +1,652 @@
+[
+    {
+        "label": "streamlit",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "streamlit",
+        "description": "streamlit",
+        "detail": "streamlit",
+        "documentation": {}
+    },
+    {
+        "label": "pandas",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "pandas",
+        "description": "pandas",
+        "detail": "pandas",
+        "documentation": {}
+    },
+    {
+        "label": "matplotlib.pyplot",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "matplotlib.pyplot",
+        "description": "matplotlib.pyplot",
+        "detail": "matplotlib.pyplot",
+        "documentation": {}
+    },
+    {
+        "label": "seaborn",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "seaborn",
+        "description": "seaborn",
+        "detail": "seaborn",
+        "documentation": {}
+    },
+    {
+        "label": "KMeans",
+        "importPath": "sklearn.cluster",
+        "description": "sklearn.cluster",
+        "isExtraImport": true,
+        "detail": "sklearn.cluster",
+        "documentation": {}
+    },
+    {
+        "label": "StandardScaler",
+        "importPath": "sklearn.preprocessing",
+        "description": "sklearn.preprocessing",
+        "isExtraImport": true,
+        "detail": "sklearn.preprocessing",
+        "documentation": {}
+    },
+    {
+        "label": "train_test_split",
+        "importPath": "sklearn.model_selection",
+        "description": "sklearn.model_selection",
+        "isExtraImport": true,
+        "detail": "sklearn.model_selection",
+        "documentation": {}
+    },
+    {
+        "label": "LinearRegression",
+        "importPath": "sklearn.linear_model",
+        "description": "sklearn.linear_model",
+        "isExtraImport": true,
+        "detail": "sklearn.linear_model",
+        "documentation": {}
+    },
+    {
+        "label": "r2_score",
+        "importPath": "sklearn.metrics",
+        "description": "sklearn.metrics",
+        "isExtraImport": true,
+        "detail": "sklearn.metrics",
+        "documentation": {}
+    },
+    {
+        "label": "mean_absolute_error",
+        "importPath": "sklearn.metrics",
+        "description": "sklearn.metrics",
+        "isExtraImport": true,
+        "detail": "sklearn.metrics",
+        "documentation": {}
+    },
+    {
+        "label": "FuncFormatter",
+        "importPath": "matplotlib.ticker",
+        "description": "matplotlib.ticker",
+        "isExtraImport": true,
+        "detail": "matplotlib.ticker",
+        "documentation": {}
+    },
+    {
+        "label": "selected_regions",
+        "kind": 5,
+        "importPath": "views.analysis",
+        "description": "views.analysis",
+        "peekOfCode": "selected_regions = st.sidebar.multiselect(\"Select Regions\", sorted(df['Region'].unique()))\nyear_range = st.sidebar.slider(\"Funding Year Range\",\n                               int(df['FundingYear'].min()),\n                               int(df['FundingYear'].max()),\n                               (int(df['FundingYear'].min()), int(df['FundingYear'].max())))\ndf_filtered = df.copy()\nif selected_regions:\n    df_filtered = df_filtered[df_filtered['Region'].isin(selected_regions)]\ndf_filtered = df_filtered[(df_filtered['FundingYear'] >= year_range[0]) & (df_filtered['FundingYear'] <= year_range[1])]\n# --- K-means Clustering Section ---",
+        "detail": "views.analysis",
+        "documentation": {}
+    },
+    {
+        "label": "year_range",
+        "kind": 5,
+        "importPath": "views.analysis",
+        "description": "views.analysis",
+        "peekOfCode": "year_range = st.sidebar.slider(\"Funding Year Range\",\n                               int(df['FundingYear'].min()),\n                               int(df['FundingYear'].max()),\n                               (int(df['FundingYear'].min()), int(df['FundingYear'].max())))\ndf_filtered = df.copy()\nif selected_regions:\n    df_filtered = df_filtered[df_filtered['Region'].isin(selected_regions)]\ndf_filtered = df_filtered[(df_filtered['FundingYear'] >= year_range[0]) & (df_filtered['FundingYear'] <= year_range[1])]\n# --- K-means Clustering Section ---\nst.markdown('<div class=\"sub-header\">K-means Clustering</div>', unsafe_allow_html=True)",
+        "detail": "views.analysis",
+        "documentation": {}
+    },
+    {
+        "label": "df_filtered",
+        "kind": 5,
+        "importPath": "views.analysis",
+        "description": "views.analysis",
+        "peekOfCode": "df_filtered = df.copy()\nif selected_regions:\n    df_filtered = df_filtered[df_filtered['Region'].isin(selected_regions)]\ndf_filtered = df_filtered[(df_filtered['FundingYear'] >= year_range[0]) & (df_filtered['FundingYear'] <= year_range[1])]\n# --- K-means Clustering Section ---\nst.markdown('<div class=\"sub-header\">K-means Clustering</div>', unsafe_allow_html=True)\nst.write(\"We use K-means clustering to group projects based on Approved Budget, Contract Cost, and Funding Year.\")\n# Sidebar control for number of clusters\nk = st.sidebar.slider(\"Select number of clusters (k)\", min_value=2, max_value=8, value=3)\n# Scale numeric features",
+        "detail": "views.analysis",
+        "documentation": {}
+    },
+    {
+        "label": "df_filtered",
+        "kind": 5,
+        "importPath": "views.analysis",
+        "description": "views.analysis",
+        "peekOfCode": "df_filtered = df_filtered[(df_filtered['FundingYear'] >= year_range[0]) & (df_filtered['FundingYear'] <= year_range[1])]\n# --- K-means Clustering Section ---\nst.markdown('<div class=\"sub-header\">K-means Clustering</div>', unsafe_allow_html=True)\nst.write(\"We use K-means clustering to group projects based on Approved Budget, Contract Cost, and Funding Year.\")\n# Sidebar control for number of clusters\nk = st.sidebar.slider(\"Select number of clusters (k)\", min_value=2, max_value=8, value=3)\n# Scale numeric features\nscaler = StandardScaler()\nX = scaler.fit_transform(df_filtered[['ApprovedBudgetForContract', 'ContractCost', 'FundingYear']])\n# Fit K-means",
+        "detail": "views.analysis",
+        "documentation": {}
+    },
+    {
+        "label": "k",
+        "kind": 5,
+        "importPath": "views.analysis",
+        "description": "views.analysis",
+        "peekOfCode": "k = st.sidebar.slider(\"Select number of clusters (k)\", min_value=2, max_value=8, value=3)\n# Scale numeric features\nscaler = StandardScaler()\nX = scaler.fit_transform(df_filtered[['ApprovedBudgetForContract', 'ContractCost', 'FundingYear']])\n# Fit K-means\nkmeans = KMeans(n_clusters=k, n_init=\"auto\", random_state=42)\ndf_filtered['Cluster'] = kmeans.fit_predict(X)\n# Cluster visualization options\nst.markdown(\"#### Cluster Visualization\")\nx_var = st.selectbox(\"X-axis variable\", [\"ApprovedBudgetForContract\", \"ContractCost\", \"FundingYear\"])",
+        "detail": "views.analysis",
+        "documentation": {}
+    },
+    {
+        "label": "scaler",
+        "kind": 5,
+        "importPath": "views.analysis",
+        "description": "views.analysis",
+        "peekOfCode": "scaler = StandardScaler()\nX = scaler.fit_transform(df_filtered[['ApprovedBudgetForContract', 'ContractCost', 'FundingYear']])\n# Fit K-means\nkmeans = KMeans(n_clusters=k, n_init=\"auto\", random_state=42)\ndf_filtered['Cluster'] = kmeans.fit_predict(X)\n# Cluster visualization options\nst.markdown(\"#### Cluster Visualization\")\nx_var = st.selectbox(\"X-axis variable\", [\"ApprovedBudgetForContract\", \"ContractCost\", \"FundingYear\"])\ny_var = st.selectbox(\"Y-axis variable\", [\"ApprovedBudgetForContract\", \"ContractCost\", \"FundingYear\"], index=1)\nfig, ax = plt.subplots(figsize=(8, 6))",
+        "detail": "views.analysis",
+        "documentation": {}
+    },
+    {
+        "label": "X",
+        "kind": 5,
+        "importPath": "views.analysis",
+        "description": "views.analysis",
+        "peekOfCode": "X = scaler.fit_transform(df_filtered[['ApprovedBudgetForContract', 'ContractCost', 'FundingYear']])\n# Fit K-means\nkmeans = KMeans(n_clusters=k, n_init=\"auto\", random_state=42)\ndf_filtered['Cluster'] = kmeans.fit_predict(X)\n# Cluster visualization options\nst.markdown(\"#### Cluster Visualization\")\nx_var = st.selectbox(\"X-axis variable\", [\"ApprovedBudgetForContract\", \"ContractCost\", \"FundingYear\"])\ny_var = st.selectbox(\"Y-axis variable\", [\"ApprovedBudgetForContract\", \"ContractCost\", \"FundingYear\"], index=1)\nfig, ax = plt.subplots(figsize=(8, 6))\nsns.scatterplot(x=df_filtered[x_var], y=df_filtered[y_var], hue=df_filtered['Cluster'], palette=\"tab10\", ax=ax)",
+        "detail": "views.analysis",
+        "documentation": {}
+    },
+    {
+        "label": "kmeans",
+        "kind": 5,
+        "importPath": "views.analysis",
+        "description": "views.analysis",
+        "peekOfCode": "kmeans = KMeans(n_clusters=k, n_init=\"auto\", random_state=42)\ndf_filtered['Cluster'] = kmeans.fit_predict(X)\n# Cluster visualization options\nst.markdown(\"#### Cluster Visualization\")\nx_var = st.selectbox(\"X-axis variable\", [\"ApprovedBudgetForContract\", \"ContractCost\", \"FundingYear\"])\ny_var = st.selectbox(\"Y-axis variable\", [\"ApprovedBudgetForContract\", \"ContractCost\", \"FundingYear\"], index=1)\nfig, ax = plt.subplots(figsize=(8, 6))\nsns.scatterplot(x=df_filtered[x_var], y=df_filtered[y_var], hue=df_filtered['Cluster'], palette=\"tab10\", ax=ax)\nax.set_title(f\"Clusters of Projects ({x_var} vs {y_var})\")\nax.set_xlabel(x_var)",
+        "detail": "views.analysis",
+        "documentation": {}
+    },
+    {
+        "label": "df_filtered['Cluster']",
+        "kind": 5,
+        "importPath": "views.analysis",
+        "description": "views.analysis",
+        "peekOfCode": "df_filtered['Cluster'] = kmeans.fit_predict(X)\n# Cluster visualization options\nst.markdown(\"#### Cluster Visualization\")\nx_var = st.selectbox(\"X-axis variable\", [\"ApprovedBudgetForContract\", \"ContractCost\", \"FundingYear\"])\ny_var = st.selectbox(\"Y-axis variable\", [\"ApprovedBudgetForContract\", \"ContractCost\", \"FundingYear\"], index=1)\nfig, ax = plt.subplots(figsize=(8, 6))\nsns.scatterplot(x=df_filtered[x_var], y=df_filtered[y_var], hue=df_filtered['Cluster'], palette=\"tab10\", ax=ax)\nax.set_title(f\"Clusters of Projects ({x_var} vs {y_var})\")\nax.set_xlabel(x_var)\nax.set_ylabel(y_var)",
+        "detail": "views.analysis",
+        "documentation": {}
+    },
+    {
+        "label": "x_var",
+        "kind": 5,
+        "importPath": "views.analysis",
+        "description": "views.analysis",
+        "peekOfCode": "x_var = st.selectbox(\"X-axis variable\", [\"ApprovedBudgetForContract\", \"ContractCost\", \"FundingYear\"])\ny_var = st.selectbox(\"Y-axis variable\", [\"ApprovedBudgetForContract\", \"ContractCost\", \"FundingYear\"], index=1)\nfig, ax = plt.subplots(figsize=(8, 6))\nsns.scatterplot(x=df_filtered[x_var], y=df_filtered[y_var], hue=df_filtered['Cluster'], palette=\"tab10\", ax=ax)\nax.set_title(f\"Clusters of Projects ({x_var} vs {y_var})\")\nax.set_xlabel(x_var)\nax.set_ylabel(y_var)\nst.pyplot(fig, use_container_width=True)\n# Cluster summaries\nst.write(\"**Cluster Summaries (Average values per cluster):**\")",
+        "detail": "views.analysis",
+        "documentation": {}
+    },
+    {
+        "label": "y_var",
+        "kind": 5,
+        "importPath": "views.analysis",
+        "description": "views.analysis",
+        "peekOfCode": "y_var = st.selectbox(\"Y-axis variable\", [\"ApprovedBudgetForContract\", \"ContractCost\", \"FundingYear\"], index=1)\nfig, ax = plt.subplots(figsize=(8, 6))\nsns.scatterplot(x=df_filtered[x_var], y=df_filtered[y_var], hue=df_filtered['Cluster'], palette=\"tab10\", ax=ax)\nax.set_title(f\"Clusters of Projects ({x_var} vs {y_var})\")\nax.set_xlabel(x_var)\nax.set_ylabel(y_var)\nst.pyplot(fig, use_container_width=True)\n# Cluster summaries\nst.write(\"**Cluster Summaries (Average values per cluster):**\")\ncluster_summary = df_filtered.groupby('Cluster')[['ApprovedBudgetForContract','ContractCost','FundingYear']].mean()",
+        "detail": "views.analysis",
+        "documentation": {}
+    },
+    {
+        "label": "cluster_summary",
+        "kind": 5,
+        "importPath": "views.analysis",
+        "description": "views.analysis",
+        "peekOfCode": "cluster_summary = df_filtered.groupby('Cluster')[['ApprovedBudgetForContract','ContractCost','FundingYear']].mean()\nst.dataframe(cluster_summary)\nst.write(\"**Regional Distribution per Cluster:**\")\nregion_cluster = df_filtered.groupby(['Cluster','Region']).size().unstack(fill_value=0)\nst.dataframe(region_cluster)\nst.info(\"Insight: Clusters reveal distinct spending patterns. Some regions dominate high-budget clusters, suggesting unequal resource distribution.\")\n# --- Linear Regression Section ---\nst.markdown('<div class=\"sub-header\">Linear Regression</div>', unsafe_allow_html=True)\nst.write(\"We use Linear Regression to predict Contract Cost from Approved Budget and Funding Year.\")\n# Regression feature toggle",
+        "detail": "views.analysis",
+        "documentation": {}
+    },
+    {
+        "label": "region_cluster",
+        "kind": 5,
+        "importPath": "views.analysis",
+        "description": "views.analysis",
+        "peekOfCode": "region_cluster = df_filtered.groupby(['Cluster','Region']).size().unstack(fill_value=0)\nst.dataframe(region_cluster)\nst.info(\"Insight: Clusters reveal distinct spending patterns. Some regions dominate high-budget clusters, suggesting unequal resource distribution.\")\n# --- Linear Regression Section ---\nst.markdown('<div class=\"sub-header\">Linear Regression</div>', unsafe_allow_html=True)\nst.write(\"We use Linear Regression to predict Contract Cost from Approved Budget and Funding Year.\")\n# Regression feature toggle\ninclude_year = st.checkbox(\"Include Funding Year as predictor\", value=True)\nif include_year:\n    X = df_filtered[['ApprovedBudgetForContract','FundingYear']]",
+        "detail": "views.analysis",
+        "documentation": {}
+    },
+    {
+        "label": "include_year",
+        "kind": 5,
+        "importPath": "views.analysis",
+        "description": "views.analysis",
+        "peekOfCode": "include_year = st.checkbox(\"Include Funding Year as predictor\", value=True)\nif include_year:\n    X = df_filtered[['ApprovedBudgetForContract','FundingYear']]\nelse:\n    X = df_filtered[['ApprovedBudgetForContract']]\ny = df_filtered['ContractCost']\n# Train/test split\nX_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)\nmodel = LinearRegression()\nmodel.fit(X_train, y_train)",
+        "detail": "views.analysis",
+        "documentation": {}
+    },
+    {
+        "label": "y",
+        "kind": 5,
+        "importPath": "views.analysis",
+        "description": "views.analysis",
+        "peekOfCode": "y = df_filtered['ContractCost']\n# Train/test split\nX_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)\nmodel = LinearRegression()\nmodel.fit(X_train, y_train)\ny_pred = model.predict(X_test)\n# Metrics\nr2 = r2_score(y_test, y_pred)\nmae = mean_absolute_error(y_test, y_pred)\nst.write(f\"**R² Score:** {r2:.3f}\")",
+        "detail": "views.analysis",
+        "documentation": {}
+    },
+    {
+        "label": "model",
+        "kind": 5,
+        "importPath": "views.analysis",
+        "description": "views.analysis",
+        "peekOfCode": "model = LinearRegression()\nmodel.fit(X_train, y_train)\ny_pred = model.predict(X_test)\n# Metrics\nr2 = r2_score(y_test, y_pred)\nmae = mean_absolute_error(y_test, y_pred)\nst.write(f\"**R² Score:** {r2:.3f}\")\nst.write(f\"**Mean Absolute Error:** {mae:,.0f} PHP\")\n# Coefficients\ncoef_df = pd.DataFrame({",
+        "detail": "views.analysis",
+        "documentation": {}
+    },
+    {
+        "label": "y_pred",
+        "kind": 5,
+        "importPath": "views.analysis",
+        "description": "views.analysis",
+        "peekOfCode": "y_pred = model.predict(X_test)\n# Metrics\nr2 = r2_score(y_test, y_pred)\nmae = mean_absolute_error(y_test, y_pred)\nst.write(f\"**R² Score:** {r2:.3f}\")\nst.write(f\"**Mean Absolute Error:** {mae:,.0f} PHP\")\n# Coefficients\ncoef_df = pd.DataFrame({\n    \"Feature\": X.columns,\n    \"Coefficient\": model.coef_",
+        "detail": "views.analysis",
+        "documentation": {}
+    },
+    {
+        "label": "r2",
+        "kind": 5,
+        "importPath": "views.analysis",
+        "description": "views.analysis",
+        "peekOfCode": "r2 = r2_score(y_test, y_pred)\nmae = mean_absolute_error(y_test, y_pred)\nst.write(f\"**R² Score:** {r2:.3f}\")\nst.write(f\"**Mean Absolute Error:** {mae:,.0f} PHP\")\n# Coefficients\ncoef_df = pd.DataFrame({\n    \"Feature\": X.columns,\n    \"Coefficient\": model.coef_\n})\nst.write(\"**Regression Coefficients:**\")",
+        "detail": "views.analysis",
+        "documentation": {}
+    },
+    {
+        "label": "mae",
+        "kind": 5,
+        "importPath": "views.analysis",
+        "description": "views.analysis",
+        "peekOfCode": "mae = mean_absolute_error(y_test, y_pred)\nst.write(f\"**R² Score:** {r2:.3f}\")\nst.write(f\"**Mean Absolute Error:** {mae:,.0f} PHP\")\n# Coefficients\ncoef_df = pd.DataFrame({\n    \"Feature\": X.columns,\n    \"Coefficient\": model.coef_\n})\nst.write(\"**Regression Coefficients:**\")\nst.dataframe(coef_df)",
+        "detail": "views.analysis",
+        "documentation": {}
+    },
+    {
+        "label": "coef_df",
+        "kind": 5,
+        "importPath": "views.analysis",
+        "description": "views.analysis",
+        "peekOfCode": "coef_df = pd.DataFrame({\n    \"Feature\": X.columns,\n    \"Coefficient\": model.coef_\n})\nst.write(\"**Regression Coefficients:**\")\nst.dataframe(coef_df)\n# Scatter plot of predictions vs actual\nfig, ax = plt.subplots(figsize=(8, 6))\nsns.scatterplot(x=y_test, y=y_pred, ax=ax, color=\"blue\")\nax.set_title(\"Predicted vs Actual Contract Cost\")",
+        "detail": "views.analysis",
+        "documentation": {}
+    },
+    {
+        "label": "metrics",
+        "kind": 5,
+        "importPath": "views.analysis",
+        "description": "views.analysis",
+        "peekOfCode": "metrics = []\nfor include_year in [True, False]:\n    if include_year:\n        X = df_filtered[['ApprovedBudgetForContract','FundingYear']]\n        label = \"With Funding Year\"\n    else:\n        X = df_filtered[['ApprovedBudgetForContract']]\n        label = \"Without Funding Year\"\n    y = df_filtered['ContractCost']\n    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)",
+        "detail": "views.analysis",
+        "documentation": {}
+    },
+    {
+        "label": "avg_budget",
+        "kind": 5,
+        "importPath": "views.conclusions",
+        "description": "views.conclusions",
+        "peekOfCode": "avg_budget = df['ApprovedBudgetForContract'].mean()\navg_cost = df['ContractCost'].mean()\ntop_region = df['Region'].value_counts().idxmax()\ntop_type = df['TypeOfWork'].value_counts().idxmax()\nst.write(f\"\"\"\n- The **average approved budget** across projects is around ₱{avg_budget:,.0f}.\n- The **average contract cost** is around ₱{avg_cost:,.0f}.\n- The region with the **highest number of projects** is **{top_region}**.\n- The most common **type of work** is **{top_type}**.\n\"\"\")",
+        "detail": "views.conclusions",
+        "documentation": {}
+    },
+    {
+        "label": "avg_cost",
+        "kind": 5,
+        "importPath": "views.conclusions",
+        "description": "views.conclusions",
+        "peekOfCode": "avg_cost = df['ContractCost'].mean()\ntop_region = df['Region'].value_counts().idxmax()\ntop_type = df['TypeOfWork'].value_counts().idxmax()\nst.write(f\"\"\"\n- The **average approved budget** across projects is around ₱{avg_budget:,.0f}.\n- The **average contract cost** is around ₱{avg_cost:,.0f}.\n- The region with the **highest number of projects** is **{top_region}**.\n- The most common **type of work** is **{top_type}**.\n\"\"\")\nst.info(\"From clustering, we saw distinct groups: low‑budget projects, mid‑range projects, and high‑budget outliers. Regression confirmed that approved budget is the strongest predictor of contract cost, while funding year adds little explanatory power.\")",
+        "detail": "views.conclusions",
+        "documentation": {}
+    },
+    {
+        "label": "top_region",
+        "kind": 5,
+        "importPath": "views.conclusions",
+        "description": "views.conclusions",
+        "peekOfCode": "top_region = df['Region'].value_counts().idxmax()\ntop_type = df['TypeOfWork'].value_counts().idxmax()\nst.write(f\"\"\"\n- The **average approved budget** across projects is around ₱{avg_budget:,.0f}.\n- The **average contract cost** is around ₱{avg_cost:,.0f}.\n- The region with the **highest number of projects** is **{top_region}**.\n- The most common **type of work** is **{top_type}**.\n\"\"\")\nst.info(\"From clustering, we saw distinct groups: low‑budget projects, mid‑range projects, and high‑budget outliers. Regression confirmed that approved budget is the strongest predictor of contract cost, while funding year adds little explanatory power.\")\n# --- Recommendations Section ---",
+        "detail": "views.conclusions",
+        "documentation": {}
+    },
+    {
+        "label": "top_type",
+        "kind": 5,
+        "importPath": "views.conclusions",
+        "description": "views.conclusions",
+        "peekOfCode": "top_type = df['TypeOfWork'].value_counts().idxmax()\nst.write(f\"\"\"\n- The **average approved budget** across projects is around ₱{avg_budget:,.0f}.\n- The **average contract cost** is around ₱{avg_cost:,.0f}.\n- The region with the **highest number of projects** is **{top_region}**.\n- The most common **type of work** is **{top_type}**.\n\"\"\")\nst.info(\"From clustering, we saw distinct groups: low‑budget projects, mid‑range projects, and high‑budget outliers. Regression confirmed that approved budget is the strongest predictor of contract cost, while funding year adds little explanatory power.\")\n# --- Recommendations Section ---\nst.markdown('<div class=\"sub-header\">Recommendations</div>', unsafe_allow_html=True)",
+        "detail": "views.conclusions",
+        "documentation": {}
+    },
+    {
+        "label": "options",
+        "kind": 5,
+        "importPath": "views.conclusions",
+        "description": "views.conclusions",
+        "peekOfCode": "options = st.selectbox(\n    \"Choose a focus area to view recommendations:\",\n    [\"Overall Budgeting\", \"Regional Allocation\", \"Project Types\", \"Future Planning\"]\n)\nif options == \"Overall Budgeting\":\n    st.write(f\"\"\"\n    - Strengthen monitoring of projects with very high budgets (average ₱{avg_budget:,.0f}), as they tend to form outlier clusters.\n    - Ensure contract costs remain aligned with approved budgets to avoid overspending.\n    - Use regression insights to forecast contract costs more accurately during planning.\n    \"\"\")",
+        "detail": "views.conclusions",
+        "documentation": {}
+    },
+    {
+        "label": "selected_regions",
+        "kind": 5,
+        "importPath": "views.data_overview",
+        "description": "views.data_overview",
+        "peekOfCode": "selected_regions = st.sidebar.multiselect(\"Select Regions\", sorted(df['Region'].unique()))\nyear_range = st.sidebar.slider(\"Funding Year Range\",\n                               int(df['FundingYear'].min()),\n                               int(df['FundingYear'].max()),\n                               (int(df['FundingYear'].min()), int(df['FundingYear'].max())))\nselected_types = st.sidebar.multiselect(\"Select Type of Work\", sorted(df['TypeOfWork'].unique()))\ndf_filtered = df.copy()\nif selected_regions:\n    df_filtered = df_filtered[df_filtered['Region'].isin(selected_regions)]\nif selected_types:",
+        "detail": "views.data_overview",
+        "documentation": {}
+    },
+    {
+        "label": "year_range",
+        "kind": 5,
+        "importPath": "views.data_overview",
+        "description": "views.data_overview",
+        "peekOfCode": "year_range = st.sidebar.slider(\"Funding Year Range\",\n                               int(df['FundingYear'].min()),\n                               int(df['FundingYear'].max()),\n                               (int(df['FundingYear'].min()), int(df['FundingYear'].max())))\nselected_types = st.sidebar.multiselect(\"Select Type of Work\", sorted(df['TypeOfWork'].unique()))\ndf_filtered = df.copy()\nif selected_regions:\n    df_filtered = df_filtered[df_filtered['Region'].isin(selected_regions)]\nif selected_types:\n    df_filtered = df_filtered[df_filtered['TypeOfWork'].isin(selected_types)]",
+        "detail": "views.data_overview",
+        "documentation": {}
+    },
+    {
+        "label": "selected_types",
+        "kind": 5,
+        "importPath": "views.data_overview",
+        "description": "views.data_overview",
+        "peekOfCode": "selected_types = st.sidebar.multiselect(\"Select Type of Work\", sorted(df['TypeOfWork'].unique()))\ndf_filtered = df.copy()\nif selected_regions:\n    df_filtered = df_filtered[df_filtered['Region'].isin(selected_regions)]\nif selected_types:\n    df_filtered = df_filtered[df_filtered['TypeOfWork'].isin(selected_types)]\ndf_filtered = df_filtered[(df_filtered['FundingYear'] >= year_range[0]) & (df_filtered['FundingYear'] <= year_range[1])]\n# --- Key Metrics ---\nst.markdown('<div class=\"sub-header\">Key Metrics</div>', unsafe_allow_html=True)\ncol1, col2, col3 = st.columns(3)",
+        "detail": "views.data_overview",
+        "documentation": {}
+    },
+    {
+        "label": "df_filtered",
+        "kind": 5,
+        "importPath": "views.data_overview",
+        "description": "views.data_overview",
+        "peekOfCode": "df_filtered = df.copy()\nif selected_regions:\n    df_filtered = df_filtered[df_filtered['Region'].isin(selected_regions)]\nif selected_types:\n    df_filtered = df_filtered[df_filtered['TypeOfWork'].isin(selected_types)]\ndf_filtered = df_filtered[(df_filtered['FundingYear'] >= year_range[0]) & (df_filtered['FundingYear'] <= year_range[1])]\n# --- Key Metrics ---\nst.markdown('<div class=\"sub-header\">Key Metrics</div>', unsafe_allow_html=True)\ncol1, col2, col3 = st.columns(3)\ncol1.metric(\"Total Projects\", len(df_filtered))",
+        "detail": "views.data_overview",
+        "documentation": {}
+    },
+    {
+        "label": "df_filtered",
+        "kind": 5,
+        "importPath": "views.data_overview",
+        "description": "views.data_overview",
+        "peekOfCode": "df_filtered = df_filtered[(df_filtered['FundingYear'] >= year_range[0]) & (df_filtered['FundingYear'] <= year_range[1])]\n# --- Key Metrics ---\nst.markdown('<div class=\"sub-header\">Key Metrics</div>', unsafe_allow_html=True)\ncol1, col2, col3 = st.columns(3)\ncol1.metric(\"Total Projects\", len(df_filtered))\ncol2.metric(\"Average Approved Budget\", f\"₱{df_filtered['ApprovedBudgetForContract'].mean():,.0f}\")\ncol3.metric(\"Average Contract Cost\", f\"₱{df_filtered['ContractCost'].mean():,.0f}\")\n# --- Dataset Structure ---\nst.markdown('<div class=\"sub-header\">Dataset Structure</div>', unsafe_allow_html=True)\nstructure_df = pd.DataFrame({",
+        "detail": "views.data_overview",
+        "documentation": {}
+    },
+    {
+        "label": "structure_df",
+        "kind": 5,
+        "importPath": "views.data_overview",
+        "description": "views.data_overview",
+        "peekOfCode": "structure_df = pd.DataFrame({\n    \"Column\": df_filtered.columns,\n    \"Non-Null Count\": df_filtered.notnull().sum(),\n    \"Data Type\": df_filtered.dtypes.astype(str)\n})\nst.dataframe(structure_df, use_container_width=True)\n# --- Raw Data (collapsible) ---\nst.markdown('<div class=\"sub-header\">Raw Data</div>', unsafe_allow_html=True)\nwith st.expander(\"Click to view raw dataset preview\"):\n    st.dataframe(df_filtered.head(20), use_container_width=True)",
+        "detail": "views.data_overview",
+        "documentation": {}
+    },
+    {
+        "label": "region_counts",
+        "kind": 5,
+        "importPath": "views.data_overview",
+        "description": "views.data_overview",
+        "peekOfCode": "region_counts = df_filtered['Region'].value_counts()\nfig, ax = plt.subplots(figsize=(8, 5))\nsns.barplot(x=region_counts.index, y=region_counts.values, palette=\"tab20\", ax=ax)\nax.set_title(\"Number of Projects per Region\")\nax.set_xlabel(\"Region\")\nax.set_ylabel(\"Project Count\")\nax.set_xticklabels(ax.get_xticklabels(), rotation=90)\nst.pyplot(fig, use_container_width=True)\n# --- Download Filtered Data ---\nst.download_button(",
+        "detail": "views.data_overview",
+        "documentation": {}
+    },
+    {
+        "label": "php_fmt",
+        "kind": 2,
+        "importPath": "views.data_visualizations",
+        "description": "views.data_visualizations",
+        "peekOfCode": "def php_fmt(x, pos):\n    return f'₱{x:,.0f}'\n# Page configuration\nst.set_page_config(\n    page_title=\"Flood Mitigation Projects - Visualizations\",\n    page_icon=\"📊\",\n    layout=\"wide\",\n    initial_sidebar_state=\"expanded\"\n)\n# Custom CSS styling",
+        "detail": "views.data_visualizations",
+        "documentation": {}
+    },
+    {
+        "label": "selected_regions",
+        "kind": 5,
+        "importPath": "views.data_visualizations",
+        "description": "views.data_visualizations",
+        "peekOfCode": "selected_regions = st.sidebar.multiselect(\"Select Regions\", sorted(df['Region'].unique()))\nyear_range = st.sidebar.slider(\"Funding Year Range\",\n                               int(df['FundingYear'].min()),\n                               int(df['FundingYear'].max()),\n                               (int(df['FundingYear'].min()), int(df['FundingYear'].max())))\nselected_types = st.sidebar.multiselect(\"Select Type of Work\", sorted(df['TypeOfWork'].unique()))\nbins = st.sidebar.slider(\"Number of bins for histograms\", min_value=10, max_value=100, value=30)\n# Apply filters\ndf_filtered = df.copy()\nif selected_regions:",
+        "detail": "views.data_visualizations",
+        "documentation": {}
+    },
+    {
+        "label": "year_range",
+        "kind": 5,
+        "importPath": "views.data_visualizations",
+        "description": "views.data_visualizations",
+        "peekOfCode": "year_range = st.sidebar.slider(\"Funding Year Range\",\n                               int(df['FundingYear'].min()),\n                               int(df['FundingYear'].max()),\n                               (int(df['FundingYear'].min()), int(df['FundingYear'].max())))\nselected_types = st.sidebar.multiselect(\"Select Type of Work\", sorted(df['TypeOfWork'].unique()))\nbins = st.sidebar.slider(\"Number of bins for histograms\", min_value=10, max_value=100, value=30)\n# Apply filters\ndf_filtered = df.copy()\nif selected_regions:\n    df_filtered = df_filtered[df_filtered['Region'].isin(selected_regions)]",
+        "detail": "views.data_visualizations",
+        "documentation": {}
+    },
+    {
+        "label": "selected_types",
+        "kind": 5,
+        "importPath": "views.data_visualizations",
+        "description": "views.data_visualizations",
+        "peekOfCode": "selected_types = st.sidebar.multiselect(\"Select Type of Work\", sorted(df['TypeOfWork'].unique()))\nbins = st.sidebar.slider(\"Number of bins for histograms\", min_value=10, max_value=100, value=30)\n# Apply filters\ndf_filtered = df.copy()\nif selected_regions:\n    df_filtered = df_filtered[df_filtered['Region'].isin(selected_regions)]\nif selected_types:\n    df_filtered = df_filtered[df_filtered['TypeOfWork'].isin(selected_types)]\ndf_filtered = df_filtered[(df_filtered['FundingYear'] >= year_range[0]) & (df_filtered['FundingYear'] <= year_range[1])]\n# Box plot: Budget by Region with variable toggle",
+        "detail": "views.data_visualizations",
+        "documentation": {}
+    },
+    {
+        "label": "bins",
+        "kind": 5,
+        "importPath": "views.data_visualizations",
+        "description": "views.data_visualizations",
+        "peekOfCode": "bins = st.sidebar.slider(\"Number of bins for histograms\", min_value=10, max_value=100, value=30)\n# Apply filters\ndf_filtered = df.copy()\nif selected_regions:\n    df_filtered = df_filtered[df_filtered['Region'].isin(selected_regions)]\nif selected_types:\n    df_filtered = df_filtered[df_filtered['TypeOfWork'].isin(selected_types)]\ndf_filtered = df_filtered[(df_filtered['FundingYear'] >= year_range[0]) & (df_filtered['FundingYear'] <= year_range[1])]\n# Box plot: Budget by Region with variable toggle\nst.markdown(\"#### Box Plot by Region\")",
+        "detail": "views.data_visualizations",
+        "documentation": {}
+    },
+    {
+        "label": "df_filtered",
+        "kind": 5,
+        "importPath": "views.data_visualizations",
+        "description": "views.data_visualizations",
+        "peekOfCode": "df_filtered = df.copy()\nif selected_regions:\n    df_filtered = df_filtered[df_filtered['Region'].isin(selected_regions)]\nif selected_types:\n    df_filtered = df_filtered[df_filtered['TypeOfWork'].isin(selected_types)]\ndf_filtered = df_filtered[(df_filtered['FundingYear'] >= year_range[0]) & (df_filtered['FundingYear'] <= year_range[1])]\n# Box plot: Budget by Region with variable toggle\nst.markdown(\"#### Box Plot by Region\")\ny_var = st.radio(\"Select variable for box plot:\", [\"ApprovedBudgetForContract\", \"ContractCost\"])\nfig, ax = plt.subplots(figsize=(10, 6))",
+        "detail": "views.data_visualizations",
+        "documentation": {}
+    },
+    {
+        "label": "df_filtered",
+        "kind": 5,
+        "importPath": "views.data_visualizations",
+        "description": "views.data_visualizations",
+        "peekOfCode": "df_filtered = df_filtered[(df_filtered['FundingYear'] >= year_range[0]) & (df_filtered['FundingYear'] <= year_range[1])]\n# Box plot: Budget by Region with variable toggle\nst.markdown(\"#### Box Plot by Region\")\ny_var = st.radio(\"Select variable for box plot:\", [\"ApprovedBudgetForContract\", \"ContractCost\"])\nfig, ax = plt.subplots(figsize=(10, 6))\nsns.boxplot(x=\"Region\", y=y_var, data=df_filtered, ax=ax)\nax.set_title(f\"Distribution of {y_var} by Region\")\nax.set_ylabel(f\"{y_var} (PHP)\")\nax.set_xlabel(\"Region\")\nax.yaxis.set_major_formatter(FuncFormatter(php_fmt))",
+        "detail": "views.data_visualizations",
+        "documentation": {}
+    },
+    {
+        "label": "y_var",
+        "kind": 5,
+        "importPath": "views.data_visualizations",
+        "description": "views.data_visualizations",
+        "peekOfCode": "y_var = st.radio(\"Select variable for box plot:\", [\"ApprovedBudgetForContract\", \"ContractCost\"])\nfig, ax = plt.subplots(figsize=(10, 6))\nsns.boxplot(x=\"Region\", y=y_var, data=df_filtered, ax=ax)\nax.set_title(f\"Distribution of {y_var} by Region\")\nax.set_ylabel(f\"{y_var} (PHP)\")\nax.set_xlabel(\"Region\")\nax.yaxis.set_major_formatter(FuncFormatter(php_fmt))\nax.set_xticklabels(ax.get_xticklabels(), rotation=90)\nfig.tight_layout()\nst.pyplot(fig, use_container_width=True)",
+        "detail": "views.data_visualizations",
+        "documentation": {}
+    },
+    {
+        "label": "chart_type",
+        "kind": 5,
+        "importPath": "views.data_visualizations",
+        "description": "views.data_visualizations",
+        "peekOfCode": "chart_type = st.selectbox(\"Choose chart type for Region distribution:\", [\"Pie\", \"Bar\"])\nregion_counts = df_filtered['Region'].value_counts()\nfig, ax = plt.subplots(figsize=(8, 6))\nif chart_type == \"Pie\":\n    ax.pie(region_counts.values, labels=region_counts.index, autopct='%1.1f%%',\n           startangle=140, colors=plt.cm.tab20.colors)\n    ax.axis('equal')\nelse:\n    sns.barplot(x=region_counts.index, y=region_counts.values, ax=ax, palette=\"tab20\")\n    ax.set_ylabel(\"Project Count\")",
+        "detail": "views.data_visualizations",
+        "documentation": {}
+    },
+    {
+        "label": "region_counts",
+        "kind": 5,
+        "importPath": "views.data_visualizations",
+        "description": "views.data_visualizations",
+        "peekOfCode": "region_counts = df_filtered['Region'].value_counts()\nfig, ax = plt.subplots(figsize=(8, 6))\nif chart_type == \"Pie\":\n    ax.pie(region_counts.values, labels=region_counts.index, autopct='%1.1f%%',\n           startangle=140, colors=plt.cm.tab20.colors)\n    ax.axis('equal')\nelse:\n    sns.barplot(x=region_counts.index, y=region_counts.values, ax=ax, palette=\"tab20\")\n    ax.set_ylabel(\"Project Count\")\n    ax.set_xlabel(\"Region\")",
+        "detail": "views.data_visualizations",
+        "documentation": {}
+    },
+    {
+        "label": "island_groups",
+        "kind": 5,
+        "importPath": "views.data_visualizations",
+        "description": "views.data_visualizations",
+        "peekOfCode": "island_groups = df_filtered['MainIsland'].value_counts()\nfig, ax = plt.subplots(figsize=(8, 6))\nax.pie(island_groups.values, labels=island_groups.index, autopct='%1.1f%%',\n       startangle=140, colors=plt.cm.tab20.colors)\nax.axis('equal')\nst.pyplot(fig, use_container_width=True)\nst.info(\"Insight: Luzon, Visayas, and Mindanao show different shares of projects, \"\n        \"which may reflect geographic priorities in flood mitigation.\")\n# Type of Work distribution\nst.markdown('<div class=\"sub-header\">Distribution of Projects by Type of Work</div>', unsafe_allow_html=True)",
+        "detail": "views.data_visualizations",
+        "documentation": {}
+    },
+    {
+        "label": "tow",
+        "kind": 5,
+        "importPath": "views.data_visualizations",
+        "description": "views.data_visualizations",
+        "peekOfCode": "tow = df_filtered['TypeOfWork'].value_counts()\nsmall_tow = tow[tow / tow.sum() >= 0.01].copy()\nothers_sum = tow[tow / tow.sum() < 0.01].sum()\nif others_sum > 0:\n    small_tow.loc['Others'] = others_sum\nfig, ax = plt.subplots(figsize=(8, 6))\nax.pie(small_tow.values, labels=small_tow.index, autopct='%1.1f%%',\n       colors=plt.cm.tab20.colors)\nax.axis('equal')\nst.pyplot(fig, use_container_width=True)",
+        "detail": "views.data_visualizations",
+        "documentation": {}
+    },
+    {
+        "label": "small_tow",
+        "kind": 5,
+        "importPath": "views.data_visualizations",
+        "description": "views.data_visualizations",
+        "peekOfCode": "small_tow = tow[tow / tow.sum() >= 0.01].copy()\nothers_sum = tow[tow / tow.sum() < 0.01].sum()\nif others_sum > 0:\n    small_tow.loc['Others'] = others_sum\nfig, ax = plt.subplots(figsize=(8, 6))\nax.pie(small_tow.values, labels=small_tow.index, autopct='%1.1f%%',\n       colors=plt.cm.tab20.colors)\nax.axis('equal')\nst.pyplot(fig, use_container_width=True)\nst.info(\"Insight: Certain types of work dominate spending, while smaller categories are grouped as 'Others'. \"",
+        "detail": "views.data_visualizations",
+        "documentation": {}
+    },
+    {
+        "label": "others_sum",
+        "kind": 5,
+        "importPath": "views.data_visualizations",
+        "description": "views.data_visualizations",
+        "peekOfCode": "others_sum = tow[tow / tow.sum() < 0.01].sum()\nif others_sum > 0:\n    small_tow.loc['Others'] = others_sum\nfig, ax = plt.subplots(figsize=(8, 6))\nax.pie(small_tow.values, labels=small_tow.index, autopct='%1.1f%%',\n       colors=plt.cm.tab20.colors)\nax.axis('equal')\nst.pyplot(fig, use_container_width=True)\nst.info(\"Insight: Certain types of work dominate spending, while smaller categories are grouped as 'Others'. \"\n        \"This suggests a concentration of resources in specific project types.\")",
+        "detail": "views.data_visualizations",
+        "documentation": {}
+    },
+    {
+        "label": "page_bg",
+        "kind": 5,
+        "importPath": "views.home",
+        "description": "views.home",
+        "peekOfCode": "page_bg = \"\"\"\n<style>\n[data-testid=\"stAppViewContainer\"] {\n    background-image: url(\"https://images.unsplash.com/photo-1729179664855-9c068fec328d?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&q=80&w=870\");\n    background-size: cover;\n    background-position: center;\n    background-repeat: no-repeat;\n}\n[data-testid=\"stHeader\"] {\n    background: rgba(0,0,0,0);",
+        "detail": "views.home",
+        "documentation": {}
+    },
+    {
+        "label": "df",
+        "kind": 5,
+        "importPath": "views.home",
+        "description": "views.home",
+        "peekOfCode": "df = pd.read_csv(\"data_cleaning/cleaned_flood_data.csv\")\nst.header(\"Dataset Structure & Summary\")\nst.subheader(\"Dataset Preview\")\nst.dataframe(df.head())\nst.subheader(\"Distinct Values per Column\")\nst.write(df.nunique())\nst.subheader(\"Null Value Counts\")\nst.write(df.isnull().sum())\nst.subheader(\"Dataset Dimensions\")\nst.write(f\"Rows: {df.shape[0]}\")",
+        "detail": "views.home",
+        "documentation": {}
+    },
+    {
+        "label": "numeric_cols",
+        "kind": 5,
+        "importPath": "views.home",
+        "description": "views.home",
+        "peekOfCode": "numeric_cols = ['ApprovedBudgetForContract', 'ContractCost', 'FundingYear']\nexisting_num_cols = [c for c in numeric_cols if c in df.columns]\nst.write(df[existing_num_cols].dtypes)\nst.subheader(\"Cleaned Dataset Preview\")\nst.dataframe(df)",
+        "detail": "views.home",
+        "documentation": {}
+    },
+    {
+        "label": "existing_num_cols",
+        "kind": 5,
+        "importPath": "views.home",
+        "description": "views.home",
+        "peekOfCode": "existing_num_cols = [c for c in numeric_cols if c in df.columns]\nst.write(df[existing_num_cols].dtypes)\nst.subheader(\"Cleaned Dataset Preview\")\nst.dataframe(df)",
+        "detail": "views.home",
+        "documentation": {}
+    },
+    {
+        "label": "home_page",
+        "kind": 5,
+        "importPath": "main",
+        "description": "main",
+        "peekOfCode": "home_page = st.Page(\n    page = \"views/home.py\",\n    title = \"Home\",\n    icon = \":material/account_circle:\",\n    default= True\n)\ndata_page = st.Page(\n    page = \"views/data_exploration.py\",\n    title = \"DATA\",\n    icon = \":material/business_center:\",",
+        "detail": "main",
+        "documentation": {}
+    },
+    {
+        "label": "data_page",
+        "kind": 5,
+        "importPath": "main",
+        "description": "main",
+        "peekOfCode": "data_page = st.Page(\n    page = \"views/data_exploration.py\",\n    title = \"DATA\",\n    icon = \":material/business_center:\",\n)\nanalysis_page = st.Page(\n    page = \"views/analysis.py\",\n    title = \"analysis\",\n    icon = \":material/business_center:\",\n)",
+        "detail": "main",
+        "documentation": {}
+    },
+    {
+        "label": "analysis_page",
+        "kind": 5,
+        "importPath": "main",
+        "description": "main",
+        "peekOfCode": "analysis_page = st.Page(\n    page = \"views/analysis.py\",\n    title = \"analysis\",\n    icon = \":material/business_center:\",\n)\nconclusions_page = st.Page(   \n    page = \"views/conclusions.py\",\n    title = \"conclusions\",\n    icon = \":material/business_center:\",\n)",
+        "detail": "main",
+        "documentation": {}
+    },
+    {
+        "label": "conclusions_page",
+        "kind": 5,
+        "importPath": "main",
+        "description": "main",
+        "peekOfCode": "conclusions_page = st.Page(   \n    page = \"views/conclusions.py\",\n    title = \"conclusions\",\n    icon = \":material/business_center:\",\n)\npg = st.navigation(\n    {\n        \"Home\":[home_page],\n        \"Data\":[data_page],\n        \"Analysis\":[analysis_page],",
+        "detail": "main",
+        "documentation": {}
+    },
+    {
+        "label": "pg",
+        "kind": 5,
+        "importPath": "main",
+        "description": "main",
+        "peekOfCode": "pg = st.navigation(\n    {\n        \"Home\":[home_page],\n        \"Data\":[data_page],\n        \"Analysis\":[analysis_page],\n        \"Conclusions\":[conclusions_page]\n    }\n)\n#st.logo()\nst.sidebar.text(\"Made by The J's\")",
+        "detail": "main",
+        "documentation": {}
+    },
+    {
+        "label": "home_page",
+        "kind": 5,
+        "importPath": "main",
+        "description": "main",
+        "peekOfCode": "home_page = st.Page(\n    page=\"views/home.py\",\n    title=\"Home\",\n    icon=\":material/account_circle:\",\n    default=True\n)\n# --- Data subsections ---\ndata_overview_page = st.Page(\n    page=\"views/data_overview.py\",\n    title=\"Overview\",",
+        "detail": "main",
+        "documentation": {}
+    },
+    {
+        "label": "data_overview_page",
+        "kind": 5,
+        "importPath": "main",
+        "description": "main",
+        "peekOfCode": "data_overview_page = st.Page(\n    page=\"views/data_overview.py\",\n    title=\"Overview\",\n    icon=\":material/insights:\",\n)\ndata_visualizations_page = st.Page(\n    page=\"views/data_visualizations.py\",\n    title=\"Visualizations\",\n    icon=\":material/bar_chart:\",\n)",
+        "detail": "main",
+        "documentation": {}
+    },
+    {
+        "label": "data_visualizations_page",
+        "kind": 5,
+        "importPath": "main",
+        "description": "main",
+        "peekOfCode": "data_visualizations_page = st.Page(\n    page=\"views/data_visualizations.py\",\n    title=\"Visualizations\",\n    icon=\":material/bar_chart:\",\n)\n# Other sections\nanalysis_page = st.Page(\n    page=\"views/analysis.py\",\n    title=\"Analysis\",\n    icon=\":material/business_center:\",",
+        "detail": "main",
+        "documentation": {}
+    },
+    {
+        "label": "analysis_page",
+        "kind": 5,
+        "importPath": "main",
+        "description": "main",
+        "peekOfCode": "analysis_page = st.Page(\n    page=\"views/analysis.py\",\n    title=\"Analysis\",\n    icon=\":material/business_center:\",\n)\nconclusions_page = st.Page(\n    page=\"views/conclusions.py\",\n    title=\"Conclusions\",\n    icon=\":material/business_center:\",\n)",
+        "detail": "main",
+        "documentation": {}
+    },
+    {
+        "label": "conclusions_page",
+        "kind": 5,
+        "importPath": "main",
+        "description": "main",
+        "peekOfCode": "conclusions_page = st.Page(\n    page=\"views/conclusions.py\",\n    title=\"Conclusions\",\n    icon=\":material/business_center:\",\n)\n# Navigation with collapsible dropdown for Data\npg = st.navigation(\n    {\n        \"Data\": [data_overview_page, data_visualizations_page],\n        \"Analysis\": [analysis_page],",
+        "detail": "main",
+        "documentation": {}
+    },
+    {
+        "label": "pg",
+        "kind": 5,
+        "importPath": "main",
+        "description": "main",
+        "peekOfCode": "pg = st.navigation(\n    {\n        \"Data\": [data_overview_page, data_visualizations_page],\n        \"Analysis\": [analysis_page],\n        \"Conclusions\": [conclusions_page]\n    }\n)\nst.sidebar.text(\"Made by The J's\")\npg.run()",
+        "detail": "main",
+        "documentation": {}
+    }
+]

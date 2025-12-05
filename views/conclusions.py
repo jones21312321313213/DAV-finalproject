@@ -1,34 +1,6 @@
 import streamlit as st
 import pandas as pd
 
-# Page configuration
-st.set_page_config(
-    page_title="Flood Mitigation Projects - Conclusions",
-    page_icon="✅",
-    layout="wide",
-    initial_sidebar_state="expanded"
-)
-
-# Custom CSS styling (place this right after set_page_config)
-st.markdown("""
-<style>
-.metric-card {
-    background-color: #f9f9f9;
-    padding: 15px;
-    border-radius: 10px;
-    text-align: center;
-    margin-bottom: 15px;
-    box-shadow: 2px 2px 5px rgba(0,0,0,0.1);
-}
-.insight-box {
-    background-color: #eef6fb;
-    padding: 12px;
-    border-left: 5px solid #2E86AB;
-    margin-top: 10px;
-    border-radius: 5px;
-}
-</style>
-""", unsafe_allow_html=True)
 
 # Page configuration
 st.set_page_config(
