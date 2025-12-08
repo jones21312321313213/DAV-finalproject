@@ -1,212 +1,173 @@
 import streamlit as st
 import pandas as pd
-import numpy as np
-import folium
-from streamlit_folium import st_folium
-from folium.plugins import FastMarkerCluster
+import matplotlib.pyplot as plt
+import seaborn as sns
+from sklearn.cluster import KMeans
+from sklearn.preprocessing import StandardScaler
+from sklearn.model_selection import train_test_split
+from sklearn.linear_model import LinearRegression
+from sklearn.metrics import r2_score, mean_absolute_error
 
-# Set page configuration
+# Page configuration
 st.set_page_config(
-    page_title="Forensic Flood Project Analysis",
-    page_icon="🚨",
+    page_title="Flood Mitigation Projects - Analysis",
+    page_icon="📈",
     layout="wide",
     initial_sidebar_state="expanded"
 )
 
-# --- 1. Load Data ---
-@st.cache_data
-def load_data():
-    """Loads CSV data."""
-    try:
-        # Using the file available in the environment
-        data = pd.read_csv("data_cleaning/dpwh_flood_control_projects.csv")
-        return data
-    except Exception as e:
-        st.error(f"Error loading data: {e}")
-        return None
+# Custom CSS styling
+st.markdown("""
+<style>
+.main-header {
+    font-size: 2.2em;
+    font-weight: bold;
+    color: #2E86AB;
+    text-align: center;
+    margin-bottom: 20px;
+}
+.sub-header {
+    font-size: 1.4em;
+    font-weight: bold;
+    color: #A23B72;
+    margin-top: 20px;
+    margin-bottom: 10px;
+}
+</style>
+""", unsafe_allow_html=True)
 
-# --- 2. Preprocessing ---
-@st.cache_data
-def preprocess_forensic(df):
-    """Cleans data and computes forensic metrics."""
-    clean = df.copy()
+# Title
+st.markdown('<div class="main-header">Flood Mitigation Projects - Analysis</div>', unsafe_allow_html=True)
 
-    # Clean Currency Columns
-    cols_to_clean = ['ContractCost', 'ApprovedBudgetForContract']
-    for col in cols_to_clean:
-        if col in clean.columns:
-            if clean[col].dtype == 'object':
-                clean[col] = clean[col].astype(str).str.replace(',', '', regex=True)
-            clean[col] = pd.to_numeric(clean[col], errors='coerce')
+# Load data
+try:
+    df = pd.read_csv("cleaned_flood_data.csv")
+    df['ApprovedBudgetForContract'] = pd.to_numeric(df['ApprovedBudgetForContract'], errors='coerce')
+    df['ContractCost'] = pd.to_numeric(df['ContractCost'], errors='coerce')
+    df['FundingYear'] = pd.to_numeric(df['FundingYear'], errors='coerce')
+    df = df.dropna(subset=['ApprovedBudgetForContract', 'ContractCost', 'FundingYear'])
+except FileNotFoundError:
+    st.error("Data file 'cleaned_flood_data.csv' not found. Please ensure the file is in the same directory.")
+    st.stop()
 
-    # Drop invalid rows
-    clean = clean.dropna(subset=['ContractCost', 'ApprovedBudgetForContract'])
+# --- Sidebar Filters ---
+st.sidebar.header("Analysis Filters")
+selected_regions = st.sidebar.multiselect("Select Regions", sorted(df['Region'].unique()))
+year_range = st.sidebar.slider("Funding Year Range",
+                               int(df['FundingYear'].min()),
+                               int(df['FundingYear'].max()),
+                               (int(df['FundingYear'].min()), int(df['FundingYear'].max())))
 
-    # Compute Risk Metrics
-    clean['RiskScore'] = clean['ContractCost'] / clean['ApprovedBudgetForContract']
-    clean['IsSuspicious'] = clean['RiskScore'] > 0.99
-    clean['Savings'] = clean['ApprovedBudgetForContract'] - clean['ContractCost']
+df_filtered = df.copy()
+if selected_regions:
+    df_filtered = df_filtered[df_filtered['Region'].isin(selected_regions)]
+df_filtered = df_filtered[(df_filtered['FundingYear'] >= year_range[0]) & (df_filtered['FundingYear'] <= year_range[1])]
 
-    # Clean Year
-    if 'FundingYear' in clean.columns:
-        clean['FundingYear'] = pd.to_numeric(clean['FundingYear'], errors='coerce')
-        clean = clean.dropna(subset=['FundingYear'])
+# --- K-means Clustering Section ---
+st.markdown('<div class="sub-header">K-means Clustering</div>', unsafe_allow_html=True)
+st.write("We use K-means clustering to group projects based on Approved Budget, Contract Cost, and Funding Year.")
 
-    # Standardize Lat/Lon
-    col_map = {'ProjectLatitude': 'latitude', 'ProjectLongitude': 'longitude'}
-    clean = clean.rename(columns=col_map)
-    clean = clean.dropna(subset=['latitude', 'longitude'])
+# Sidebar control for number of clusters
+k = st.sidebar.slider("Select number of clusters (k)", min_value=2, max_value=8, value=3)
 
-    return clean
+# Scale numeric features
+scaler = StandardScaler()
+X = scaler.fit_transform(df_filtered[['ApprovedBudgetForContract', 'ContractCost', 'FundingYear']])
 
-# --- 3. Filter Logic ---
-def get_filters(df):
-    """Renders filters in the sidebar/column and returns filtered dataframe."""
+# Fit K-means
+kmeans = KMeans(n_clusters=k, n_init="auto", random_state=42)
+df_filtered['Cluster'] = kmeans.fit_predict(X)
 
-    with st.sidebar:
-        st.header("🔍 Filter Projects")
-        search_term = st.text_input("Search Project Name", "")
+# Cluster visualization options
+st.markdown("#### Cluster Visualization")
+x_var = st.selectbox("X-axis variable", ["ApprovedBudgetForContract", "ContractCost", "FundingYear"])
+y_var = st.selectbox("Y-axis variable", ["ApprovedBudgetForContract", "ContractCost", "FundingYear"], index=1)
 
-        regions = sorted(df['Region'].dropna().unique().tolist()) if 'Region' in df.columns else []
-        selected_regions = st.multiselect("Select Region", regions)
+fig, ax = plt.subplots(figsize=(8, 6))
+sns.scatterplot(x=df_filtered[x_var], y=df_filtered[y_var], hue=df_filtered['Cluster'], palette="tab10", ax=ax)
+ax.set_title(f"Clusters of Projects ({x_var} vs {y_var})")
+ax.set_xlabel(x_var)
+ax.set_ylabel(y_var)
+st.pyplot(fig, use_container_width=True)
 
-        provinces = sorted(df['Province'].dropna().unique().tolist()) if 'Province' in df.columns else []
-        selected_provinces = st.multiselect("Select Province", provinces)
+# Cluster summaries
+st.write("**Cluster Summaries (Average values per cluster):**")
+cluster_summary = df_filtered.groupby('Cluster')[['ApprovedBudgetForContract','ContractCost','FundingYear']].mean()
+st.dataframe(cluster_summary)
 
-        work_types = sorted(df['TypeOfWork'].dropna().unique().tolist()) if 'TypeOfWork' in df.columns else []
-        selected_works = st.multiselect("Select Type of Work", work_types)
+st.write("**Regional Distribution per Cluster:**")
+region_cluster = df_filtered.groupby(['Cluster','Region']).size().unstack(fill_value=0)
+st.dataframe(region_cluster)
 
-        selected_years = None
-        if 'FundingYear' in df.columns:
-            min_year = int(df['FundingYear'].min())
-            max_year = int(df['FundingYear'].max())
-            selected_years = st.slider("Funding Year Range", min_year, max_year, (min_year, max_year))
+st.info("Insight: Clusters reveal distinct spending patterns. Some regions dominate high-budget clusters, suggesting unequal resource distribution.")
 
-    # Apply Logic
-    filtered_df = df.copy()
+# --- Linear Regression Section ---
+st.markdown('<div class="sub-header">Linear Regression</div>', unsafe_allow_html=True)
+st.write("We use Linear Regression to predict Contract Cost from Approved Budget and Funding Year.")
 
-    if search_term:
-        filtered_df = filtered_df[filtered_df['ProjectName'].str.contains(search_term, case=False, na=False)]
-    if selected_regions:
-        filtered_df = filtered_df[filtered_df['Region'].isin(selected_regions)]
-    if selected_provinces:
-        filtered_df = filtered_df[filtered_df['Province'].isin(selected_provinces)]
-    if selected_works:
-        filtered_df = filtered_df[filtered_df['TypeOfWork'].isin(selected_works)]
-    if selected_years:
-        filtered_df = filtered_df[
-            (filtered_df['FundingYear'] >= selected_years[0]) &
-            (filtered_df['FundingYear'] <= selected_years[1])
-            ]
+# Regression feature toggle
+include_year = st.checkbox("Include Funding Year as predictor", value=True)
 
-    return filtered_df
+if include_year:
+    X = df_filtered[['ApprovedBudgetForContract','FundingYear']]
+else:
+    X = df_filtered[['ApprovedBudgetForContract']]
+y = df_filtered['ContractCost']
 
-# --- 4. Optimized Map Generation ---
-# @st.cache_resource
-def generate_map(data, center):
-    """
-    Generates the Folium map object.
-    Cached with st.cache_resource so it only rebuilds when 'data' changes.
-    """
-    m = folium.Map(location=center, zoom_start=6, tiles="cartodbpositron")
+# Train/test split
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 
-    if not data.empty:
-        locations = data[['latitude', 'longitude']].values.tolist()
-        FastMarkerCluster(data=locations).add_to(m)
-    st_folium(m, returned_objects=[], use_container_width=True)
-    return m
+model = LinearRegression()
+model.fit(X_train, y_train)
+y_pred = model.predict(X_test)
 
-# --- 5. Main Application ---
-def main():
-    st.title("Forensic Data Analysis for Flood Control Projects")
+# Metrics
+r2 = r2_score(y_test, y_pred)
+mae = mean_absolute_error(y_test, y_pred)
 
-    # Load and Clean
-    raw_data = load_data()
-    if raw_data is None:
-        return
-    df_clean = preprocess_forensic(raw_data)
+st.write(f"**R² Score:** {r2:.3f}")
+st.write(f"**Mean Absolute Error:** {mae:,.0f} PHP")
 
-    # Get Filtered Data
-    filtered_df = get_filters(df_clean)
+# Coefficients
+coef_df = pd.DataFrame({
+    "Feature": X.columns,
+    "Coefficient": model.coef_
+})
+st.write("**Regression Coefficients:**")
+st.dataframe(coef_df)
 
-    # --- KPI METRICS SECTION ---
-    # We display high-level stats relevant to forensic auditing
-    if not filtered_df.empty:
-        total_expenditure = filtered_df['ContractCost'].sum()
-        total_suspicious_value = filtered_df[filtered_df['IsSuspicious']]['ContractCost'].sum()
-        suspicious_count = filtered_df['IsSuspicious'].sum()
-        suspicious_pct = (suspicious_count / len(filtered_df)) * 100
+# Scatter plot of predictions vs actual
+fig, ax = plt.subplots(figsize=(8, 6))
+sns.scatterplot(x=y_test, y=y_pred, ax=ax, color="blue")
+ax.set_title("Predicted vs Actual Contract Cost")
+ax.set_xlabel("Actual Contract Cost (PHP)")
+ax.set_ylabel("Predicted Contract Cost (PHP)")
+st.pyplot(fig, use_container_width=True)
 
-        # Calculate Bid Variance (Savings)
-        total_budget = filtered_df['ApprovedBudgetForContract'].sum()
-        avg_savings_pct = ((total_budget - total_expenditure) / total_budget) * 100
+# Residual plot
+fig, ax = plt.subplots(figsize=(8, 6))
+sns.histplot(y_test - y_pred, bins=30, kde=True, color="red", ax=ax)
+ax.set_title("Residuals Distribution (Actual - Predicted)")
+ax.set_xlabel("Residual (PHP)")
+ax.set_ylabel("Frequency")
+st.pyplot(fig, use_container_width=True)
 
-        kpi1, kpi2, kpi3, kpi4 = st.columns(4)
+# Compare models with vs without FundingYear
+metrics = []
+for include_year in [True, False]:
+    if include_year:
+        X = df_filtered[['ApprovedBudgetForContract','FundingYear']]
+        label = "With Funding Year"
+    else:
+        X = df_filtered[['ApprovedBudgetForContract']]
+        label = "Without Funding Year"
+    y = df_filtered['ContractCost']
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+    model = LinearRegression().fit(X_train, y_train)
+    y_pred = model.predict(X_test)
+    metrics.append({"Model": label, "R²": r2_score(y_test, y_pred), "MAE": mean_absolute_error(y_test, y_pred)})
 
-        kpi1.metric(
-            "Total Contract Value",
-            f"₱{total_expenditure / 1e9:,.2f} B",
-            help="Total value of contracts awarded."
-        )
+st.write("**Model Comparison:**")
+st.dataframe(pd.DataFrame(metrics))
 
-        kpi2.metric(
-            "At-Risk Capital",
-            f"₱{total_suspicious_value / 1e9:,.2f} B",
-            delta_color="inverse",
-            help="Total value of projects flagged as suspicious (Cost > 99% of Budget)."
-        )
-
-        kpi3.metric(
-            "Suspicious Projects",
-            f"{suspicious_count} ({suspicious_pct:.1f}%)",
-            delta=f"{suspicious_count} Flagged",
-            delta_color="inverse",
-            help="Number of projects where Contract Cost is suspiciously close to the Budget Ceiling."
-        )
-
-        kpi4.metric(
-            "Gov't Savings Rate",
-            f"{avg_savings_pct:.2f}%",
-            delta="Lower is Riskier",
-            delta_color="normal", # Logic: Low savings = Bad for govt/High risk of collusion
-            help="Average difference between Budget and Contract Cost. Near 0% suggests lack of competition."
-        )
-
-        st.markdown("---")
-
-    # Layout
-    col1, col2 = st.columns([0.8, .2], gap="small")
-
-    with col1:
-        st.subheader(f"Interactive Map ({len(filtered_df)} projects)")
-
-        if not filtered_df.empty:
-            center_lat = filtered_df['latitude'].mean()
-            center_lon = filtered_df['longitude'].mean()
-            center = [center_lat, center_lon]
-        else:
-            center = [11.8917, 122.4199]
-
-        folium_map = generate_map(filtered_df, center)
-
-
-    with col2:
-        st.subheader("Details")
-
-        if not filtered_df.empty:
-            # Top Contractor Statistic
-            if 'Contractor' in filtered_df.columns:
-                top_contractor = filtered_df.groupby('Contractor')['ContractCost'].sum().sort_values(ascending=False).head(1)
-                st.info(f"🏆 Top Contractor: **{top_contractor.index[0]}**")
-                st.caption(f"Total Awarded: ₱{top_contractor.values[0]/1e6:,.1f} M")
-
-            st.write("Recent Projects:")
-            st.dataframe(
-                filtered_df[['ProjectName', 'ContractCost', 'RiskScore']].sort_values('ContractCost', ascending=False).head(10),
-                hide_index=True
-            )
-        else:
-            st.warning("No projects match the current filters.")
-
-if __name__ == '__main__':
-    main()
+st.info("Insight: Approved budget is the strongest predictor of contract cost. Funding year adds little explanatory power, meaning costs are mostly driven by budget size.")
