@@ -1,107 +1,63 @@
 import streamlit as st
-import pandas as pd
+from utils import load_css
 
+st.set_page_config(layout="centered", page_title="Conclusions")
+load_css()
 
-# Page configuration
-st.set_page_config(
-    page_title="Flood Mitigation Projects - Conclusions",
-    page_icon="✅",
-    layout="wide",
-    initial_sidebar_state="expanded"
-)
+st.markdown('<div class="title-card">Conclusions & Recommendations</div>', unsafe_allow_html=True)
 
-# Custom CSS styling
+# Executive Summary Box
 st.markdown("""
-<style>
-.main-header {
-    font-size: 2.2em;
-    font-weight: bold;
-    color: #2E86AB;
-    text-align: center;
-    margin-bottom: 20px;
-}
-.sub-header {
-    font-size: 1.4em;
-    font-weight: bold;
-    color: #A23B72;
-    margin-top: 20px;
-    margin-bottom: 10px;
-}
-</style>
-""", unsafe_allow_html=True)
+    <div>
+        <div class="section-title">Summary</div>
+        <div class="custom-box" style='margin-bottom: 10px;'>
+            <b>The analysis reveals significant regional disparities in funding, with a concentration of capital in Luzon.</b>
+        </div>
+        <div class="custom-box" style='margin-bottom: 10px;'>
+            <b>Forensic markers indicate potential non-competitive bidding practices in specific clusters, where contract costs align suspiciously 
+    close to budget ceilings.</b>
+        </div>
+        <div class="custom-box" style='margin-bottom: 10px;'>
+            <b>Market analysis further identifies a risk of oligopoly, with a few contractors dominating the sector.</b>
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
 
-# Title
-st.markdown('<div class="main-header">Flood Mitigation Projects - Conclusions & Recommendations</div>', unsafe_allow_html=True)
+col1, col2 = st.columns(2, gap="medium")
 
-# Load data
-try:
-    df = pd.read_csv("cleaned_flood_data.csv")
-    df['ApprovedBudgetForContract'] = pd.to_numeric(df['ApprovedBudgetForContract'], errors='coerce')
-    df['ContractCost'] = pd.to_numeric(df['ContractCost'], errors='coerce')
-    df['FundingYear'] = pd.to_numeric(df['FundingYear'], errors='coerce')
-    df = df.dropna(subset=['ApprovedBudgetForContract', 'ContractCost', 'FundingYear'])
-except FileNotFoundError:
-    st.error("Data file 'cleaned_flood_data.csv' not found. Please ensure the file is in the same directory.")
-    st.stop()
+with col1:
+    st.markdown("### Key Insights")
 
-# --- Summary Section ---
-st.markdown('<div class="sub-header">Summary of Findings</div>', unsafe_allow_html=True)
+    with st.expander("Geospatial Disparity", expanded=True):
+        st.write("""
+            * **Luzon Bias:** High-value projects are heavily concentrated in NCR and Region III.
+            * **Fragmentation:** Visayas and Mindanao receive a high volume of projects, but they are significantly smaller in scale/cost, suggesting a fragmented approach to flood control.
+            """)
 
-avg_budget = df['ApprovedBudgetForContract'].mean()
-avg_cost = df['ContractCost'].mean()
-top_region = df['Region'].value_counts().idxmax()
-top_type = df['TypeOfWork'].value_counts().idxmax()
+    with st.expander("2. Forensic Flags (Corruption Risk)", expanded=True):
+        st.write("""
+            * **Ceiling Bidding:** A distinct cluster of projects has a `RiskScore > 0.99`. This lack of variance between Budget and Cost suggests potential collusion or lack of competition.
+            * **Cost Anomalies:** Outlier detection found projects with extremely high costs but suspiciously short durations, warranting physical audits.
+            """)
 
-st.write(f"""
-- The **average approved budget** across projects is around ₱{avg_budget:,.0f}.
-- The **average contract cost** is around ₱{avg_cost:,.0f}.
-- The region with the **highest number of projects** is **{top_region}**.
-- The most common **type of work** is **{top_type}**.
-""")
+with col2:
+    st.markdown("### Recommendations")
 
-st.info("From clustering, we saw distinct groups: low‑budget projects, mid‑range projects, and high‑budget outliers. Regression confirmed that approved budget is the strongest predictor of contract cost, while funding year adds little explanatory power.")
+    with st.expander("Policy & Auditing", expanded=True):
+        st.write("""
+            * **Automated Flagging:** Implement a system that auto-flags bids within 1% of the budget ceiling.
+            * **Market Entry:** Encourage more competition to break the oligopoly of top contractors.
+            """)
 
-# --- Recommendations Section ---
-st.markdown('<div class="sub-header">Recommendations</div>', unsafe_allow_html=True)
+    with st.expander("Data Governance", expanded=True):
+        st.write("""
+            * **Mandatory Reporting:** Enforce strict encoding of `ActualCompletionDate`. Missing data hides delays.
+            * **Standardization:** Standardize project naming conventions to allow for better NLP analysis of project scopes.
+            """)
 
-options = st.selectbox(
-    "Choose a focus area to view recommendations:",
-    ["Overall Budgeting", "Regional Allocation", "Project Types", "Future Planning"]
-)
-
-if options == "Overall Budgeting":
-    st.write(f"""
-    - Strengthen monitoring of projects with very high budgets (average ₱{avg_budget:,.0f}), as they tend to form outlier clusters.
-    - Ensure contract costs remain aligned with approved budgets to avoid overspending.
-    - Use regression insights to forecast contract costs more accurately during planning.
-    """)
-
-elif options == "Regional Allocation":
-    st.write(f"""
-    - Regions like **{top_region}** dominate project counts; balance allocations to reduce disparities.
-    - Regions with consistently higher contract costs should undergo stricter auditing.
-    - Identify low‑cost clusters and investigate whether underfunding affects project quality.
-    """)
-
-elif options == "Project Types":
-    st.write(f"""
-    - The most common type of work is **{top_type}**; diversify project types to balance resource use.
-    - Small categories grouped under 'Others' should be reviewed to ensure they are not overlooked.
-    - Consider bundling similar project types to achieve economies of scale.
-    """)
-
-elif options == "Future Planning":
-    st.write("""
-    - Use regression models to predict future contract costs based on proposed budgets.
-    - Plan budgets with inflation and cost escalation in mind, especially for long-term projects.
-    - Track funding year trends to anticipate periods of higher spending and prepare accordingly.
-    """)
-
-
-# --- Closing Section ---
-st.markdown('<div class="sub-header">Final Takeaway</div>', unsafe_allow_html=True)
-st.write("""
-Flood mitigation projects show clear patterns in budget and cost behavior. By combining clustering and regression,
-we can identify high-risk projects, forecast costs more reliably, and make smarter allocation decisions.
-Implementing these recommendations will improve transparency, efficiency, and impact of future flood mitigation efforts.
-""")
+st.divider()
+st.markdown("""
+    <div style="text-align: center; color: #666; font-style: italic;">
+        "Data science does not just analyze numbers; it enforces accountability."
+    </div>
+    """, unsafe_allow_html=True)
